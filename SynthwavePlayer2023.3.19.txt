@@ -1,0 +1,224 @@
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.IOException;
+import java.net.URL;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JToggleButton;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+
+public class SynthwavePlayer extends MouseAdapter implements ActionListener{
+public static void main(String[] args) throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException, UnsupportedAudioFileException, IOException, LineUnavailableException {
+	new SynthwavePlayer();
+}
+AudioInputStream[] synthwaveTrackAIS;
+Clip[] synthwaveTrackClip;
+ImageIcon synthwaveIcon, playButtonImage, stopButtonImage;
+JFrame synthwaveFrame;
+JLabel synthwavePlayerNotPlaying, synthwavePlayerPlaying;
+JLabel[] MEGADRIVE_TRACKTITLE, MEGADRIVE_TRACKTITLE_ANIMATED;
+JToggleButton playButton, stopButton;
+URL[] synthwaveTrackURL;
+SynthwavePlayer() throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException, UnsupportedAudioFileException, IOException, LineUnavailableException{	
+	UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+	synthwaveTrackURL = new URL[15];
+	synthwaveTrackAIS = new AudioInputStream[15];
+	synthwaveTrackClip = new Clip[15];
+	synthwaveTrackURL[0] = getClass().getResource("Mega Drive - Acid Spit.wav");
+	synthwaveTrackURL[1] = getClass().getResource("Mega Drive - Exoskeleton.wav");
+	synthwaveTrackURL[2] = getClass().getResource("Mega Drive - Junkhead.wav");
+	synthwaveTrackURL[3] = getClass().getResource("Mega Drive - Omnicore.wav");
+	synthwaveTrackURL[4] = getClass().getResource("Mega Drive - Ruthless.wav");
+	for (int i = 0; i < 5; i++) {
+	  synthwaveTrackAIS[i] = AudioSystem.getAudioInputStream(synthwaveTrackURL[i]);
+	  synthwaveTrackClip[i] = AudioSystem.getClip();
+	  synthwaveTrackClip[i].open(synthwaveTrackAIS[i]);
+	}
+	synthwavePlayerNotPlaying = new JLabel(new ImageIcon(getClass().getClassLoader().getResource("SynthwavePlayerNotPlaying.gif")));
+	synthwavePlayerPlaying = new JLabel(new ImageIcon(getClass().getClassLoader().getResource("SynthwavePlayerPlaying.gif")));
+	synthwavePlayerNotPlaying.setBounds(0,0,500,500);
+	synthwavePlayerPlaying.setBounds(0,0,500,500);
+	MEGADRIVE_TRACKTITLE =  new JLabel[5];
+	MEGADRIVE_TRACKTITLE[0] = new JLabel(new ImageIcon(getClass().getClassLoader().getResource("Mega Drive - Acid Spit.png")));
+	MEGADRIVE_TRACKTITLE[1] = new JLabel(new ImageIcon(getClass().getClassLoader().getResource("Mega Drive - Exoskeleton.png")));
+	MEGADRIVE_TRACKTITLE[2] = new JLabel(new ImageIcon(getClass().getClassLoader().getResource("Mega Drive - Junkhead.png")));
+	MEGADRIVE_TRACKTITLE[3] = new JLabel(new ImageIcon(getClass().getClassLoader().getResource("Mega Drive - Omnicore.png")));
+	MEGADRIVE_TRACKTITLE[4] = new JLabel(new ImageIcon(getClass().getClassLoader().getResource("Mega Drive - Ruthless.png")));
+	MEGADRIVE_TRACKTITLE[0].setBounds(600,50,588,63);
+	MEGADRIVE_TRACKTITLE[1].setBounds(600,150,696,63);
+	MEGADRIVE_TRACKTITLE[2].setBounds(600,250,603,63);
+	MEGADRIVE_TRACKTITLE[3].setBounds(600,350,603,63);
+	MEGADRIVE_TRACKTITLE[4].setBounds(600,450,603,63);
+	MEGADRIVE_TRACKTITLE_ANIMATED = new JLabel[5];
+	MEGADRIVE_TRACKTITLE_ANIMATED[0] = new JLabel(new ImageIcon(getClass().getClassLoader().getResource("Mega Drive - Acid Spit.gif")));
+	MEGADRIVE_TRACKTITLE_ANIMATED[1] = new JLabel(new ImageIcon(getClass().getClassLoader().getResource("Mega Drive - Exoskeleton.gif")));
+	MEGADRIVE_TRACKTITLE_ANIMATED[2] = new JLabel(new ImageIcon(getClass().getClassLoader().getResource("Mega Drive - Junkhead.gif")));
+	MEGADRIVE_TRACKTITLE_ANIMATED[3] = new JLabel(new ImageIcon(getClass().getClassLoader().getResource("Mega Drive - Omnicore.gif")));
+	MEGADRIVE_TRACKTITLE_ANIMATED[4] = new JLabel(new ImageIcon(getClass().getClassLoader().getResource("Mega Drive - Ruthless.gif")));
+	MEGADRIVE_TRACKTITLE_ANIMATED[0].setBounds(600,50,563,88);
+	MEGADRIVE_TRACKTITLE_ANIMATED[1].setBounds(600,150,637,89);
+	MEGADRIVE_TRACKTITLE_ANIMATED[2].setBounds(600,250,579,89);
+	MEGADRIVE_TRACKTITLE_ANIMATED[3].setBounds(600,350,577,87);
+	MEGADRIVE_TRACKTITLE_ANIMATED[4].setBounds(600,450,553,88);
+	playButtonImage = new ImageIcon(getClass().getClassLoader().getResource("PlayButton.png"));
+	stopButtonImage = new ImageIcon(getClass().getClassLoader().getResource("StopButton.png"));
+	playButton = new JToggleButton();
+	stopButton = new JToggleButton();
+	playButton.addActionListener(this);
+	stopButton.addActionListener(this);
+	playButton.setBounds(50,500,100,100);
+	stopButton.setBounds(300,500,100,100);	
+	playButton.setIcon(playButtonImage);
+	stopButton.setIcon(stopButtonImage);
+	synthwaveIcon = new ImageIcon(getClass().getClassLoader().getResource("SynthwaveIcon.png"));
+	synthwaveFrame = new JFrame();
+	synthwaveFrame.add(synthwavePlayerNotPlaying);
+	synthwaveFrame.add(playButton);
+	synthwaveFrame.add(stopButton);
+	for(int i=0;i<5;i++) {
+		MEGADRIVE_TRACKTITLE[i].addMouseListener(this);
+		synthwaveFrame.add(MEGADRIVE_TRACKTITLE[i]);
+	}
+	synthwaveFrame.getContentPane().setBackground(Color.BLACK);
+	synthwaveFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	synthwaveFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+	synthwaveFrame.setIconImage(synthwaveIcon.getImage());
+	synthwaveFrame.setLayout(null);
+	synthwaveFrame.setTitle("Synthwave Player");
+	synthwaveFrame.setVisible(true);
+}
+@Override
+public void actionPerformed(ActionEvent e) {
+	if(e.getSource()==playButton) {
+		for(int i=0;i<5;i++) {
+		if(MEGADRIVE_TRACKTITLE_ANIMATED[i].getParent()!=null) {
+		synthwaveFrame.remove(synthwavePlayerNotPlaying);
+		synthwaveFrame.add(synthwavePlayerPlaying);
+		synthwaveFrame.revalidate();
+		synthwaveFrame.repaint();
+		}
+		if(MEGADRIVE_TRACKTITLE_ANIMATED[0].getParent()!=null) {
+			synthwaveTrackClip[0].loop(Clip.LOOP_CONTINUOUSLY);
+		}
+		else if(MEGADRIVE_TRACKTITLE_ANIMATED[1].getParent()!=null) {
+			synthwaveTrackClip[1].loop(Clip.LOOP_CONTINUOUSLY);
+		}
+		else if(MEGADRIVE_TRACKTITLE_ANIMATED[2].getParent()!=null) {
+			synthwaveTrackClip[2].loop(Clip.LOOP_CONTINUOUSLY);
+		}
+		else if(MEGADRIVE_TRACKTITLE_ANIMATED[3].getParent()!=null) {
+			synthwaveTrackClip[3].loop(Clip.LOOP_CONTINUOUSLY);
+		}
+		else if(MEGADRIVE_TRACKTITLE_ANIMATED[4].getParent()!=null) {
+			synthwaveTrackClip[4].loop(Clip.LOOP_CONTINUOUSLY);
+		}
+	}
+	}
+	else if(e.getSource()==stopButton) {
+		synthwaveFrame.remove(synthwavePlayerPlaying);
+		synthwaveFrame.add(synthwavePlayerNotPlaying);
+		synthwaveFrame.revalidate();
+		synthwaveFrame.repaint();
+		for(int i=0;i<5;i++) {
+			synthwaveTrackClip[i].setMicrosecondPosition(0);
+			synthwaveTrackClip[i].stop();
+		}
+		for(int i=0;i<5;i++) {
+			synthwaveFrame.remove(MEGADRIVE_TRACKTITLE_ANIMATED[i]);
+			synthwaveFrame.add(MEGADRIVE_TRACKTITLE[i]);
+			synthwaveFrame.revalidate();
+			synthwaveFrame.repaint();
+		}
+	}
+}
+public void mousePressed(MouseEvent e) {
+	if(e.getSource()==MEGADRIVE_TRACKTITLE[0]) {
+		synthwaveFrame.remove(MEGADRIVE_TRACKTITLE[0]);
+		for(int i=1;i<5;i++) {
+			synthwaveFrame.remove(MEGADRIVE_TRACKTITLE_ANIMATED[i]);
+			synthwaveFrame.add(MEGADRIVE_TRACKTITLE[i]);	
+		}
+		synthwaveFrame.add(MEGADRIVE_TRACKTITLE_ANIMATED[0]);
+		synthwaveFrame.revalidate();
+		synthwaveFrame.repaint();
+	}
+	else if(e.getSource()==MEGADRIVE_TRACKTITLE[1]) {
+		synthwaveFrame.remove(MEGADRIVE_TRACKTITLE[1]);
+		for(int i=0;i<5;i++) {
+			if(i==1) {
+				continue;
+			}
+			synthwaveFrame.remove(MEGADRIVE_TRACKTITLE_ANIMATED[i]);
+			synthwaveFrame.add(MEGADRIVE_TRACKTITLE[i]);
+		}
+		synthwaveFrame.add(MEGADRIVE_TRACKTITLE_ANIMATED[1]);
+		synthwaveFrame.revalidate();
+		synthwaveFrame.repaint();
+	}
+	else if(e.getSource()==MEGADRIVE_TRACKTITLE[2]) {
+		synthwaveFrame.remove(MEGADRIVE_TRACKTITLE[2]);
+		for(int i=0;i<5;i++) {
+			if(i==2) {
+				continue;
+			}
+			synthwaveFrame.remove(MEGADRIVE_TRACKTITLE_ANIMATED[i]);
+			synthwaveFrame.add(MEGADRIVE_TRACKTITLE[i]);
+		}
+		synthwaveFrame.add(MEGADRIVE_TRACKTITLE_ANIMATED[2]);
+		synthwaveFrame.revalidate();
+		synthwaveFrame.repaint();
+	}
+	else if(e.getSource()==MEGADRIVE_TRACKTITLE[3]) {
+		synthwaveFrame.remove(MEGADRIVE_TRACKTITLE[3]);
+		for(int i=0;i<5;i++) {
+			if(i==3) {
+				continue;
+			}
+			synthwaveFrame.remove(MEGADRIVE_TRACKTITLE_ANIMATED[i]);
+			synthwaveFrame.add(MEGADRIVE_TRACKTITLE[i]);
+		}
+		synthwaveFrame.add(MEGADRIVE_TRACKTITLE_ANIMATED[3]);
+		synthwaveFrame.revalidate();
+		synthwaveFrame.repaint();
+	}
+	else if(e.getSource()==MEGADRIVE_TRACKTITLE[4]) {
+		synthwaveFrame.remove(MEGADRIVE_TRACKTITLE[4]);
+		for(int i=0;i<5;i++) {
+			if(i==4) {
+				continue;
+			}
+			synthwaveFrame.remove(MEGADRIVE_TRACKTITLE_ANIMATED[i]);
+			synthwaveFrame.add(MEGADRIVE_TRACKTITLE[i]);
+		}
+		synthwaveFrame.add(MEGADRIVE_TRACKTITLE_ANIMATED[4]);
+		synthwaveFrame.revalidate();
+		synthwaveFrame.repaint();
+	}
+}
+public void mouseEntered(MouseEvent e) {
+	for(int i=0;i<5;i++) {
+	if(e.getSource()==MEGADRIVE_TRACKTITLE[i]) {
+		synthwaveFrame.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+	}
+	}
+}
+public void mouseExited(MouseEvent e) {
+	for(int i=0;i<5;i++) {
+	if(e.getSource()==MEGADRIVE_TRACKTITLE[i]) {
+		synthwaveFrame.setCursor(Cursor.getDefaultCursor());
+	}
+	}
+}
+}
