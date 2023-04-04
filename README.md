@@ -1,13 +1,13 @@
 # Synthwave-Player
 
-Name: Synthwave Player
+Project Name: Synthwave Player
 
-Language: Java
+Programming Language: Java
 
-Type: Independent Project
+Project Type: Independent Project
 
 IDE: Eclipse 2021.6
 
 Author: Alan Zhou
 
-Description: This program is a simple Synthwave Player featuring five soundtracks of Mega Drive
+Project Description: This program is a simple Synthwave Player featuring five soundtracks of Mega Drive
